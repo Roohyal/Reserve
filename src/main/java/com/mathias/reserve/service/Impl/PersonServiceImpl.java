@@ -3,6 +3,8 @@ package com.mathias.reserve.service.Impl;
 import com.mathias.reserve.domain.entities.ConfirmationToken;
 import com.mathias.reserve.domain.entities.JToken;
 import com.mathias.reserve.domain.entities.Person;
+import com.mathias.reserve.domain.entities.Role;
+import com.mathias.reserve.domain.enums.RoleName;
 import com.mathias.reserve.domain.enums.TokenType;
 import com.mathias.reserve.exceptions.AlreadyExistException;
 import com.mathias.reserve.exceptions.NotEnabledException;
@@ -15,6 +17,7 @@ import com.mathias.reserve.payload.response.RegisterResponse;
 import com.mathias.reserve.repository.ConfirmationTokenRepository;
 import com.mathias.reserve.repository.JTokenRepository;
 import com.mathias.reserve.repository.PersonRepository;
+import com.mathias.reserve.repository.RoleRepository;
 import com.mathias.reserve.service.EmailService;
 import com.mathias.reserve.service.PersonService;
 import com.mathias.reserve.utils.EmailUtil;
@@ -43,6 +46,7 @@ public class PersonServiceImpl implements PersonService {
     private final AuthenticationManager authenticationManager;
     private final EmailService emailService;
     private final EmailUtil emailUtil;
+    private final RoleRepository roleRepository;
 
 
     @Override
@@ -197,5 +201,26 @@ public class PersonServiceImpl implements PersonService {
         personRepository.save(person);
 
         return "Password Reset is Successful";
+    }
+
+    @Override
+    public String makeAdmin(String email, Long id) {
+
+        personRepository.findByEmail(email).orElseThrow(() -> new RuntimeException("User not found"));
+
+        // Find the user
+        Person person = personRepository.findById(id).orElseThrow(() -> new RuntimeException("User not found"));
+
+        // Find the ADMIN role
+        Role adminRole = roleRepository.findByRoleName(RoleName.ADMIN)
+                .orElseThrow(() -> new RuntimeException("Admin role not found"));
+
+        // Assign the ADMIN role
+        person.getRoles().add(adminRole);
+
+        // Save the updated user
+        personRepository.save(person);
+
+        return "User with name" + person.getFullName()+ " has been made an admin.";
     }
 }

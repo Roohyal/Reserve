@@ -17,4 +17,6 @@ public interface PersonService {
 
     String resetPassword(ResetPasswordRequest resetPasswordRequest);
 
+    String makeAdmin(String email, Long id);
+
 }

@@ -9,6 +9,7 @@ import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 import java.util.Set;
@@ -60,6 +61,9 @@ public class Person extends BaseEntity implements UserDetails {
     @OneToMany(mappedBy = "persons",  cascade = CascadeType.ALL, orphanRemoval = true)
     private List<ConfirmationToken> confirmationTokens;
 
+    // One person can have many bookings
+    @OneToMany(mappedBy = "person", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<Bookings> bookings;
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
