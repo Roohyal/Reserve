@@ -9,10 +9,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequiredArgsConstructor
@@ -52,5 +49,28 @@ public class TicketController {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         String currentUsername = authentication.getName();
         return ResponseEntity.ok(ticketService.bookTicket(currentUsername,bookingDto));
+    }
+
+    @PutMapping("/cancel-ticket")
+    public ResponseEntity<?> cancelTicket(@RequestParam Long bookingId) throws Exception {
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        String currentUsername = authentication.getName();
+        return ResponseEntity.ok(ticketService.cancelBooking(currentUsername,bookingId));
+    }
+
+    @PreAuthorize("hasRole('ADMIN')")
+    @GetMapping("/get-cancelled-tickets")
+    public ResponseEntity<?> getCancelledTickets() throws Exception {
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        String currentUsername = authentication.getName();
+        return ResponseEntity.ok(ticketService.getCancelledTickets(currentUsername));
+    }
+
+    @PreAuthorize("hasRole('ADMIN')")
+    @GetMapping("/get-reserved-tickets")
+    public ResponseEntity<?> getReservedTickets() throws Exception {
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        String currentUsername = authentication.getName();
+        return ResponseEntity.ok(ticketService.getReservedTickets(currentUsername));
     }
 }

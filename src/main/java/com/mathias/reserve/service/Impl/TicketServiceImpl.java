@@ -4,6 +4,7 @@ import com.mathias.reserve.domain.entities.*;
 import com.mathias.reserve.domain.enums.Status;
 import com.mathias.reserve.exceptions.NotFoundException;
 import com.mathias.reserve.payload.request.*;
+import com.mathias.reserve.payload.response.BookingResponse;
 import com.mathias.reserve.payload.response.TicketResponse;
 import com.mathias.reserve.repository.*;
 import com.mathias.reserve.service.EmailService;
@@ -11,7 +12,9 @@ import com.mathias.reserve.service.TicketService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
 import java.util.UUID;
+import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -141,5 +144,54 @@ public class TicketServiceImpl implements TicketService {
                 .responseCode("005")
                 .responseMessage("BOOKING VERIFICATION SUCCESSFUL, KINDLY CHECK YOUR EMAIL FOR YOUR DETAILS ")
                 .build();
+    }
+
+    @Override
+    public String cancelBooking(String email, Long bookingId) {
+        personRepository.findByEmail(email).orElseThrow(()-> new NotFoundException("User not found"));
+
+        // Find the booking for this user
+        Bookings booking = bookingRepository.findByIdAndPerson_Email(bookingId, email)
+                .orElseThrow(() -> new RuntimeException("Booking not found or not authorized"));
+
+        // Perform cancellation
+        booking.setStatus(Status.CANCELLED);
+        bookingRepository.save(booking);
+
+        return "Your Ticket has been cancelled Successfully!!";
+    }
+
+    @Override
+    public List<BookingReport> getCancelledTickets(String email) {
+        return bookingRepository.findByStatus(Status.CANCELLED)
+                .stream()
+                .map(bookings -> BookingReport.builder()
+                        .id(bookings.getId())
+                        .bookingNumber(bookings.getBookingNumber())
+                        .seatType(bookings.getSeatType().name())
+                        .status(bookings.getStatus().name())
+                        .personName(bookings.getPerson().getFullName())
+                        .departureTerminal(bookings.getTicket().getDepartureTerminal())
+                        .arrivalTerminal(bookings.getTicket().getArrivalTerminal())
+
+                        .build())
+                .collect(Collectors.toList());
+    }
+
+    @Override
+    public List<BookingReport> getReservedTickets(String email) {
+        return bookingRepository.findByStatus(Status.RESERVED)
+                .stream()
+                .map(bookings -> BookingReport.builder()
+                        .id(bookings.getId())
+                        .bookingNumber(bookings.getBookingNumber())
+                        .seatType(bookings.getSeatType().name())
+                        .status(bookings.getStatus().name())
+                        .personName(bookings.getPerson().getFullName())
+                        .departureTerminal(bookings.getTicket().getDepartureTerminal())
+                        .arrivalTerminal(bookings.getTicket().getArrivalTerminal())
+
+                        .build())
+                .collect(Collectors.toList());
     }
 }

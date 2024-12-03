@@ -19,13 +19,12 @@ import java.util.List;
 @Builder
 public class Ticket extends BaseEntity {
 
+    @Enumerated(EnumType.STRING)
     private Vehicle vehicle;
 
     private LocalDate travelDate;
 
     private LocalDateTime travelTime;
-
-    private Status status;
 
     private int available_tickets;
 

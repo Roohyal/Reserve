@@ -1,4 +1,4 @@
-package com.mathias.reserve.payload.request;
+package com.mathias.reserve.payload.response;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
