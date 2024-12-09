@@ -19,6 +19,8 @@ import java.util.List;
 @Builder
 public class Ticket extends BaseEntity {
 
+    private String tickeNo;
+
     @Enumerated(EnumType.STRING)
     private Vehicle vehicle;
 

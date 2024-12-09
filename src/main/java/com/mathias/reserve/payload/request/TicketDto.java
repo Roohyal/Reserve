@@ -16,9 +16,17 @@ import java.time.LocalDateTime;
 @Builder
 public class TicketDto {
 
+    private String ticket_no;
+
     private LocalDate travelDate;
 
     private LocalDateTime travelTime;
+
+    private String departureTerminal;
+
+    private String arrivalTerminal;
+
+    private String state;
 
     private Long departureTerminalId;
 
@@ -31,4 +39,5 @@ public class TicketDto {
     private int availableTickets;
 
     private Long price;
+
 }

@@ -5,6 +5,8 @@ import com.mathias.reserve.domain.enums.Status;
 import com.mathias.reserve.exceptions.NotFoundException;
 import com.mathias.reserve.payload.request.*;
 import com.mathias.reserve.payload.response.BookingResponse;
+import com.mathias.reserve.payload.response.PersonResponse;
+import com.mathias.reserve.payload.response.PersonTicketResponse;
 import com.mathias.reserve.payload.response.TicketResponse;
 import com.mathias.reserve.repository.*;
 import com.mathias.reserve.service.EmailService;
@@ -19,6 +21,7 @@ import java.util.stream.Collectors;
 @Service
 @RequiredArgsConstructor
 public class TicketServiceImpl implements TicketService {
+
     private final TicketRepository ticketRepository;
     private final PersonRepository personRepository;
     private final StateRepository stateRepository;
@@ -76,6 +79,7 @@ public class TicketServiceImpl implements TicketService {
         }
 
         Ticket ticket = Ticket.builder()
+                .tickeNo(UUID.randomUUID().toString())
                 .travelDate(ticketDto.getTravelDate())
                 .travelTime(ticketDto.getTravelTime())
                 .price(ticketDto.getPrice())
@@ -163,7 +167,9 @@ public class TicketServiceImpl implements TicketService {
 
     @Override
     public List<BookingReport> getCancelledTickets(String email) {
-        return bookingRepository.findByStatus(Status.CANCELLED)
+        personRepository.findByEmail(email).orElseThrow(()-> new NotFoundException("User not found"));
+
+        return bookingRepository.findByStatusAndPersonEmail(Status.CANCELLED, email)
                 .stream()
                 .map(bookings -> BookingReport.builder()
                         .id(bookings.getId())
@@ -180,7 +186,9 @@ public class TicketServiceImpl implements TicketService {
 
     @Override
     public List<BookingReport> getReservedTickets(String email) {
-        return bookingRepository.findByStatus(Status.RESERVED)
+        personRepository.findByEmail(email).orElseThrow(()-> new NotFoundException("User not found"));
+
+        return bookingRepository.findByStatusAndPersonEmail(Status.RESERVED, email)
                 .stream()
                 .map(bookings -> BookingReport.builder()
                         .id(bookings.getId())
@@ -194,4 +202,85 @@ public class TicketServiceImpl implements TicketService {
                         .build())
                 .collect(Collectors.toList());
     }
+
+    @Override
+    public List<TicketDto> getAllTickets(String email) {
+        personRepository.findByEmail(email).orElseThrow(()-> new NotFoundException("User not found"));
+
+        return ticketRepository.findAll()
+                .stream()
+                .map(ticket -> TicketDto.builder()
+                        .ticket_no(ticket.getTickeNo())
+                        .availableTickets(ticket.getAvailable_tickets())
+                        .state(ticket.getState().getName())
+                        .departureTerminal(ticket.getDepartureTerminal().getName())
+                        .arrivalTerminal(ticket.getArrivalTerminal().getName())
+                        .price(ticket.getPrice())
+                        .vehicle(ticket.getVehicle())
+                        .build())
+                .collect(Collectors.toList());
+    }
+
+    @Override
+    public List<PersonResponse> getPeopleByTicketNo(String email, String ticketNo) {
+
+        personRepository.findByEmail(email).orElseThrow(()-> new NotFoundException("User not found"));
+
+        Ticket ticket = ticketRepository.findByTicketNo(ticketNo)
+                .orElseThrow(() -> new RuntimeException("Ticket not found with ticket_no: " + ticketNo));
+
+        return ticket.getBookings().stream()
+                .map(booking -> PersonResponse.builder()
+                        .fullName(booking.getPerson().getFullName())
+                        .email(booking.getPerson().getEmail())
+                        .phone(booking.getPerson().getPhone())
+                        .build())
+                .collect(Collectors.toList());
+
+    }
+
+    @Override
+    public PersonTicketResponse getPersonByBookingNo(String email, String booking_no) {
+        personRepository.findByEmail(email).orElseThrow(()-> new NotFoundException("User not found"));
+
+        Bookings booking = bookingRepository.findByBookingNumber(booking_no)
+                .orElseThrow(() -> new RuntimeException("Booking not found with booking number: " + booking_no));
+
+        return PersonTicketResponse.builder()
+                .fullName(booking.getPerson().getFullName())
+                .email(booking.getPerson().getEmail())
+                .arrivalTerminal(booking.getTicket().getArrivalTerminal().getName())
+                .departureTerminal(booking.getTicket().getDepartureTerminal().getName())
+                .travelDate(booking.getTicket().getTravelDate())
+                .travelTime(booking.getTicket().getTravelTime())
+                .ticketNumber(booking.getTicket().getTickeNo())
+                .vehicle(booking.getTicket().getVehicle())
+                .seatType(booking.getSeatType())
+                .build();
+    }
+
+    @Override
+    public String deleteBooking(String email, String bookingId) {
+        personRepository.findByEmail(email).orElseThrow(()-> new NotFoundException("User not found"));
+
+        Bookings booking = bookingRepository.findByBookingNumber(bookingId)
+                .orElseThrow(() -> new RuntimeException("Booking not found with booking number: " + bookingId));
+
+        bookingRepository.delete(booking);
+        return "Booking with number " + bookingId + " has been deleted successfully.";
+    }
+
+    @Override
+    public String deleteTicket(String email, String ticketId) {
+
+
+        personRepository.findByEmail(email).orElseThrow(()-> new NotFoundException("User not found"));
+
+        Ticket ticket = ticketRepository.findByTicketNo(ticketId)
+                .orElseThrow(() -> new RuntimeException("Ticket not found with ticket number: " + ticketId));
+        ticketRepository.delete(ticket);
+
+        return "Ticket with number " + ticketId + " has been deleted successfully.";
+    }
 }
+

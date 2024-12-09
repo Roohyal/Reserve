@@ -58,7 +58,7 @@ public class TicketController {
         return ResponseEntity.ok(ticketService.cancelBooking(currentUsername,bookingId));
     }
 
-    @PreAuthorize("hasRole('ADMIN')")
+
     @GetMapping("/get-cancelled-tickets")
     public ResponseEntity<?> getCancelledTickets() throws Exception {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
@@ -66,11 +66,51 @@ public class TicketController {
         return ResponseEntity.ok(ticketService.getCancelledTickets(currentUsername));
     }
 
-    @PreAuthorize("hasRole('ADMIN')")
+
     @GetMapping("/get-reserved-tickets")
     public ResponseEntity<?> getReservedTickets() throws Exception {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         String currentUsername = authentication.getName();
         return ResponseEntity.ok(ticketService.getReservedTickets(currentUsername));
     }
+
+    @PreAuthorize("hasRole('ADMIN')")
+    @GetMapping("/get-all-tickets")
+    public ResponseEntity<?> getAllTickets() throws Exception {
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        String currentUsername = authentication.getName();
+        return ResponseEntity.ok(ticketService.getAllTickets(currentUsername));
+    }
+
+    @PreAuthorize("hasRole('ADMIN')")
+    @GetMapping("/get-people-by-ticket-no")
+    public ResponseEntity<?> getPeopleByTicketNo(@RequestParam String ticketNo) throws Exception {
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        String currentUsername = authentication.getName();
+        return ResponseEntity.ok(ticketService.getPeopleByTicketNo(currentUsername,ticketNo));
+    }
+    @PreAuthorize("hasRole('ADMIN')")
+    @GetMapping("/get-person-by-booking-no")
+    public ResponseEntity<?> getPersonByBookingNo(@RequestParam String bookingNo) throws Exception {
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        String currentUsername = authentication.getName();
+        return ResponseEntity.ok(ticketService.getPersonByBookingNo(currentUsername,bookingNo));
+    }
+
+    @PreAuthorize("hasRole('ADMIN')")
+    @DeleteMapping("delete-booking")
+    public ResponseEntity<?> deleteBooking(@RequestParam String bookingId) throws Exception {
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        String currentUsername = authentication.getName();
+        return ResponseEntity.ok(ticketService.deleteBooking(currentUsername,bookingId));
+    }
+
+    @PreAuthorize("hasRole('ADMIN')")
+    @DeleteMapping("delete-ticket")
+    public ResponseEntity<?> deleteTicket(@RequestParam String ticketId) throws Exception {
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        String currentUsername = authentication.getName();
+        return ResponseEntity.ok(ticketService.deleteTicket(currentUsername,ticketId));
+    }
+
 }

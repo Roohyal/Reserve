@@ -55,8 +55,6 @@ public class SecurityConfig {
                                 .authenticated()
 
                 )
-                .oauth2Login(withDefaults())
-                .formLogin(withDefaults())
                 .exceptionHandling(exception -> exception
                         .authenticationEntryPoint(jwtAuthenticationEntryPoint))
                 .sessionManagement(session -> session

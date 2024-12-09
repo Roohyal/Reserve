@@ -1,5 +1,6 @@
 package com.mathias.reserve.domain.entities;
 
+import com.mathias.reserve.domain.enums.RoleName;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
@@ -44,16 +45,11 @@ public class Person extends BaseEntity implements UserDetails {
     // this token is to handle reset password
     private String resetToken;
 
+
     // monitor token creation time and expiration time
     private LocalDateTime resetTokenCreationTime;
 
-    @ManyToMany(fetch = FetchType.EAGER)
-    @JoinTable(
-            name = "user_roles",
-            joinColumns = @JoinColumn(name = "user_id"),
-            inverseJoinColumns = @JoinColumn(name = "role_id")
-    )
-    private Set<Role> roles;
+   private RoleName roleName;
 
     @OneToMany(mappedBy = "person", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<JToken> jtokens;
@@ -67,8 +63,7 @@ public class Person extends BaseEntity implements UserDetails {
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
-        return roles.stream().map(role -> new SimpleGrantedAuthority(role.getRoleName().name()))
-                .collect(Collectors.toList());
+        return List.of(new SimpleGrantedAuthority(roleName.name()));
     }
 
     @Override

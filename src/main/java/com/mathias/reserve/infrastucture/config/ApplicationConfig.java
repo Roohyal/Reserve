@@ -29,7 +29,7 @@ public class ApplicationConfig {
     }
 
     @Bean
-    public AuthenticationProvider authenticationProvider() {
+    public AuthenticationProvider authenticationProvider(){
         DaoAuthenticationProvider authProvider = new DaoAuthenticationProvider();
         authProvider.setUserDetailsService(userDetailsService());
         authProvider.setPasswordEncoder(passwordEncoder());
@@ -37,12 +37,10 @@ public class ApplicationConfig {
         return authProvider;
     }
 
-
     @Bean
-    public AuthenticationManager authenticationManager(AuthenticationConfiguration config) throws Exception {
+    public AuthenticationManager authenticationManager(AuthenticationConfiguration config)throws Exception {
         return config.getAuthenticationManager();
     }
-
 
     @Bean
     public UserDetailsService userDetailsService() {
@@ -54,11 +52,13 @@ public class ApplicationConfig {
                     return new org.springframework.security.core.userdetails.User(
                             user.getEmail(),
                             user.getPassword(),
-                            user.getRoles().stream()
-                                    .map(role -> new SimpleGrantedAuthority("ROLE_" + role.getRoleName().name()))
+                            Arrays.asList(user.getRole()).stream()
+                                    .map(role -> new SimpleGrantedAuthority("ROLE_" + role))
                                     .collect(Collectors.toList())
                     );
+
                 })
                 .orElseThrow(() -> new NotFoundException("User does not exist "));
+
     }
 }

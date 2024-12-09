@@ -17,9 +17,9 @@ public class SwaggerConfig {
         //This creates an OpenAPI object
         return new OpenAPI()
                 //This sets general information about the API
-                .info(new Info().title("Task it ")
+                .info(new Info().title("Reserve")
                         .version("1.0")
-                        .description("A Task management Api"))
+                        .description("A Railway Ticketing System"))
                 //This adds a security schemes component
                 .components(new Components()
                         .addSecuritySchemes("bearer-jwt", new SecurityScheme()
