@@ -79,7 +79,7 @@ public class TicketServiceImpl implements TicketService {
         }
 
         Ticket ticket = Ticket.builder()
-                .tickeNo(UUID.randomUUID().toString())
+                .ticketNo(UUID.randomUUID().toString())
                 .travelDate(ticketDto.getTravelDate())
                 .travelTime(ticketDto.getTravelTime())
                 .price(ticketDto.getPrice())
@@ -210,7 +210,7 @@ public class TicketServiceImpl implements TicketService {
         return ticketRepository.findAll()
                 .stream()
                 .map(ticket -> TicketDto.builder()
-                        .ticket_no(ticket.getTickeNo())
+                        .ticket_no(ticket.getTicketNo())
                         .availableTickets(ticket.getAvailable_tickets())
                         .state(ticket.getState().getName())
                         .departureTerminal(ticket.getDepartureTerminal().getName())
@@ -253,7 +253,7 @@ public class TicketServiceImpl implements TicketService {
                 .departureTerminal(booking.getTicket().getDepartureTerminal().getName())
                 .travelDate(booking.getTicket().getTravelDate())
                 .travelTime(booking.getTicket().getTravelTime())
-                .ticketNumber(booking.getTicket().getTickeNo())
+                .ticketNumber(booking.getTicket().getTicketNo())
                 .vehicle(booking.getTicket().getVehicle())
                 .seatType(booking.getSeatType())
                 .build();

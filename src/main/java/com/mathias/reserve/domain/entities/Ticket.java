@@ -19,7 +19,7 @@ import java.util.List;
 @Builder
 public class Ticket extends BaseEntity {
 
-    private String tickeNo;
+    private String ticketNo;
 
     @Enumerated(EnumType.STRING)
     private Vehicle vehicle;

@@ -52,7 +52,7 @@ public class ApplicationConfig {
                     return new org.springframework.security.core.userdetails.User(
                             user.getEmail(),
                             user.getPassword(),
-                            Arrays.asList(user.getRole()).stream()
+                            Arrays.asList(user.getRoleName()).stream()
                                     .map(role -> new SimpleGrantedAuthority("ROLE_" + role))
                                     .collect(Collectors.toList())
                     );
