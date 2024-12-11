@@ -4,10 +4,7 @@ import com.mathias.reserve.domain.entities.*;
 import com.mathias.reserve.domain.enums.Status;
 import com.mathias.reserve.exceptions.NotFoundException;
 import com.mathias.reserve.payload.request.*;
-import com.mathias.reserve.payload.response.BookingResponse;
-import com.mathias.reserve.payload.response.PersonResponse;
-import com.mathias.reserve.payload.response.PersonTicketResponse;
-import com.mathias.reserve.payload.response.TicketResponse;
+import com.mathias.reserve.payload.response.*;
 import com.mathias.reserve.repository.*;
 import com.mathias.reserve.service.EmailService;
 import com.mathias.reserve.service.TicketService;
@@ -129,7 +126,7 @@ public class TicketServiceImpl implements TicketService {
         ticketRepository.save(ticket);
 
         EmailDetails emailDetails = EmailDetails.builder()
-                .fullname(person.getFullName())
+                .fullName(person.getFullName())
                 .recipient(person.getEmail())
                 .bookingNumber(booking.getBookingNumber())
                 .departureTerminal(ticket.getDepartureTerminal())
@@ -204,15 +201,17 @@ public class TicketServiceImpl implements TicketService {
     }
 
     @Override
-    public List<TicketDto> getAllTickets(String email) {
+    public List<TicketDtoResponse> getAllTickets(String email) {
         personRepository.findByEmail(email).orElseThrow(()-> new NotFoundException("User not found"));
 
         return ticketRepository.findAll()
                 .stream()
-                .map(ticket -> TicketDto.builder()
-                        .ticket_no(ticket.getTicketNo())
+                .map(ticket -> TicketDtoResponse.builder()
+                        .ticketNo(ticket.getTicketNo())
                         .availableTickets(ticket.getAvailable_tickets())
                         .state(ticket.getState().getName())
+                        .travelTime(ticket.getTravelTime())
+                        .travelDate(ticket.getTravelDate())
                         .departureTerminal(ticket.getDepartureTerminal().getName())
                         .arrivalTerminal(ticket.getArrivalTerminal().getName())
                         .price(ticket.getPrice())

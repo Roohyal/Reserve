@@ -29,7 +29,7 @@ public class TicketController {
 
     @PreAuthorize("hasRole('ADMIN')")
     @PostMapping("add_terminal")
-    public ResponseEntity<?> addTerminal(@RequestParam TerminalDto terminalDto){
+    public ResponseEntity<?> addTerminal(@RequestBody TerminalDto terminalDto){
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         String currentUsername = authentication.getName();
         return ResponseEntity.ok(ticketService.addTerminal(currentUsername, terminalDto));
@@ -38,14 +38,14 @@ public class TicketController {
 
     @PreAuthorize("hasRole('ADMIN')")
     @PostMapping("/create_tickets")
-    public ResponseEntity<?> createTickets(@RequestParam TicketDto ticketDto){
+    public ResponseEntity<?> createTickets(@RequestBody TicketDto ticketDto){
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         String currentUsername = authentication.getName();
         return ResponseEntity.ok(ticketService.createTicket(currentUsername, ticketDto));
     }
     
     @PostMapping("/book-tickets")
-    public ResponseEntity<?> bookTickets(@RequestParam BookingDto bookingDto) throws Exception {
+    public ResponseEntity<?> bookTickets(@RequestBody BookingDto bookingDto) throws Exception {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         String currentUsername = authentication.getName();
         return ResponseEntity.ok(ticketService.bookTicket(currentUsername,bookingDto));

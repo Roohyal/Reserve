@@ -17,7 +17,7 @@ import java.time.LocalTime;
 @NoArgsConstructor
 @Builder
 public class EmailDetails {
-    private String fullname;
+    private String fullName;
 
     private String recipient;
 

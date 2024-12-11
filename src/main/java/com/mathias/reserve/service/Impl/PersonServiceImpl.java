@@ -76,9 +76,9 @@ public class PersonServiceImpl implements PersonService {
         }
 
         Person person = Person.builder()
-                .fullName(registerRequest.getFullname())
+                .fullName(registerRequest.getFullName())
                 .email(registerRequest.getEmail())
-                .password(registerRequest.getPassword())
+                .password(passwordEncoder.encode(registerRequest.getPassword()))
                 .confirmPassword(registerRequest.getConfirmPassword())
                 .phone(registerRequest.getPhoneNumber())
                 .roleName(RoleName.USER)
@@ -91,7 +91,7 @@ public class PersonServiceImpl implements PersonService {
         String confirmationUrl = emailUtil.getVerificationUrl(confirmationTokenModel.getToken());
 
         EmailDetails emailDetails = EmailDetails.builder()
-                .fullname(savedPerson.getFullName())
+                .fullName(savedPerson.getFullName())
                 .recipient(savedPerson.getEmail())
                 .subject("RESERVE!!! ACCOUNT CREATED SUCCESSFULLY")
                 .link(confirmationUrl)
@@ -169,7 +169,7 @@ public class PersonServiceImpl implements PersonService {
         String resetUrl = emailUtil.getResetUrl(token);
 
         EmailDetails emailDetails = EmailDetails.builder()
-                .fullname(person.getFullName())
+                .fullName(person.getFullName())
                 .recipient(person.getEmail())
                 .subject("RESERVE!!!! RESET YOUR PASSWORD ")
                 .link(resetUrl)

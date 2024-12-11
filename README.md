@@ -34,7 +34,7 @@ Reserve is a comprehensive Railway Ticketing System designed to simplify and enh
 ##### Technologies Used
 
 * Backend: Spring Boot (Java)
-* Database: MySQL (or your preferred RDBMS)
+* Database: PostgreSQL (or your preferred RDBMS)
 * Authentication & Security: Spring Security
 * Build Tool: Maven
 * Version Control: Git

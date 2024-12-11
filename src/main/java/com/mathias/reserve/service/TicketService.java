@@ -2,12 +2,9 @@ package com.mathias.reserve.service;
 
 import com.mathias.reserve.payload.request.BookingDto;
 import com.mathias.reserve.payload.request.BookingReport;
-import com.mathias.reserve.payload.response.BookingResponse;
+import com.mathias.reserve.payload.response.*;
 import com.mathias.reserve.payload.request.TerminalDto;
 import com.mathias.reserve.payload.request.TicketDto;
-import com.mathias.reserve.payload.response.PersonResponse;
-import com.mathias.reserve.payload.response.PersonTicketResponse;
-import com.mathias.reserve.payload.response.TicketResponse;
 
 import java.util.List;
 
@@ -27,7 +24,7 @@ public interface TicketService {
 
     List<BookingReport> getReservedTickets(String email);
 
-    List<TicketDto> getAllTickets(String email);
+    List<TicketDtoResponse> getAllTickets(String email);
 
     List<PersonResponse> getPeopleByTicketNo (String email, String ticket_no);
 
