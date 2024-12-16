@@ -35,13 +35,13 @@ public class EmailServiceImpl implements EmailService {
         Context context = new Context();
         Map<String, Object> variables = Map.of(
                 "name", emailDetails.getFullName(),
-                "link", emailDetails.getLink()
-//                "bookingNumber", emailDetails.getBookingNumber(),
-//                "arrivalTerminal", emailDetails.getArrivalTerminal(),
-//                "departureTerminal",emailDetails.getDepartureTerminal(),
-//                "travelDate",emailDetails.getTravelDate(),
-//                "travelTime",emailDetails.getTravelTime(),
-//                "seatType",emailDetails.getSeatType()
+                "link", emailDetails.getLink(),
+                "bookingNumber", emailDetails.getBookingNumber(),
+                "arrivalTerminal", emailDetails.getArrivalTerminal(),
+                "departureTerminal",emailDetails.getDepartureTerminal(),
+                "travelDate",emailDetails.getTravelDate(),
+                "travelTime",emailDetails.getTravelTime(),
+                "seatType",emailDetails.getSeatType()
 
         );
         context.setVariables(variables);

@@ -44,10 +44,7 @@ public class AdminInitializer {
     @Bean
     CommandLineRunner initDatabase(PersonRepository personRepository) {
         return args -> {
-//            Optional<Person> adminRole = personRepository.findByRoleName(RoleName.ADMIN);
-//            if (adminRole.isEmpty()) {
-//                throw new NotFoundException("Default role ADMIN not found in the database.");
-//            }
+
 
             if (userRepository.findByEmail(adminEmail).isEmpty()) {
                 Person adminUser = new Person();

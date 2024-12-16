@@ -8,6 +8,7 @@ import com.mathias.reserve.payload.response.*;
 import com.mathias.reserve.repository.*;
 import com.mathias.reserve.service.EmailService;
 import com.mathias.reserve.service.TicketService;
+import com.mathias.reserve.utils.AccountUtil;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -25,6 +26,7 @@ public class TicketServiceImpl implements TicketService {
     private final TerminalRepository terminalRepository;
     private final BookingRepository bookingRepository;
     private final EmailService emailService;
+
 
     @Override
     public String addState(String email, String name) {
@@ -76,7 +78,7 @@ public class TicketServiceImpl implements TicketService {
         }
 
         Ticket ticket = Ticket.builder()
-                .ticketNo(UUID.randomUUID().toString())
+                .ticketNo(AccountUtil.generateTicketNumber())
                 .travelDate(ticketDto.getTravelDate())
                 .travelTime(ticketDto.getTravelTime())
                 .price(ticketDto.getPrice())
@@ -116,7 +118,7 @@ public class TicketServiceImpl implements TicketService {
         booking.setTicket(ticket);
         booking.setPerson(person);
         booking.setSeatType(bookingDto.getSeatType());
-        booking.setBookingNumber(UUID.randomUUID().toString()); // Generate unique booking number
+        booking.setBookingNumber(AccountUtil.generateBookingNumber()); // Generate unique booking number
         booking.setStatus(Status.RESERVED);
 
         // Save the booking
