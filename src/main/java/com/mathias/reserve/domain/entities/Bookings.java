@@ -14,14 +14,13 @@ import lombok.*;
 @Builder
 public class Bookings extends BaseEntity {
 
-    @Column(nullable = false, unique = true)
+
     @Enumerated(EnumType.STRING)
     private SeatType seatType;
 
     @Column(nullable = false, unique = true)
     private String bookingNumber;
 
-    @Column(nullable = false, unique = true)
     @Enumerated(EnumType.STRING)
     private Status status;
 

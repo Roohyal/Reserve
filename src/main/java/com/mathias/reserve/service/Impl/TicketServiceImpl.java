@@ -10,7 +10,9 @@ import com.mathias.reserve.service.EmailService;
 import com.mathias.reserve.service.TicketService;
 import com.mathias.reserve.utils.AccountUtil;
 import lombok.RequiredArgsConstructor;
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.UUID;
@@ -98,13 +100,14 @@ public class TicketServiceImpl implements TicketService {
     }
 
     @Override
+    @Transactional
     public BookingResponse bookTicket(String email, BookingDto bookingDto) throws Exception {
 
         // Fetch the ticket
         Ticket ticket = ticketRepository.findById(bookingDto.getTicketId())
                 .orElseThrow(() -> new Exception("Ticket not found"));
 
-//         Check ticket availability
+        // Check ticket availability
         if (ticket.getAvailable_tickets() <= 0) {
             throw new Exception("No tickets available");
         }
@@ -112,6 +115,10 @@ public class TicketServiceImpl implements TicketService {
         // Fetch the person using their email
         Person person = personRepository.findByEmail(email)
                 .orElseThrow(() -> new Exception("Person not found"));
+
+        // Reduce ticket availability (within the transaction)
+        ticket.setAvailable_tickets(ticket.getAvailable_tickets() - 1);
+        ticketRepository.save(ticket);
 
         // Create a new booking
         Bookings booking = new Bookings();
@@ -122,11 +129,13 @@ public class TicketServiceImpl implements TicketService {
         booking.setStatus(Status.RESERVED);
 
         // Save the booking
-        bookingRepository.save(booking);
+        try {
+            bookingRepository.save(booking);
+        } catch (DataIntegrityViolationException e) {
+            throw new Exception("Booking could not be completed due to a database constraint", e);
+        }
 
-        ticket.setAvailable_tickets(ticket.getAvailable_tickets() - 1);
-        ticketRepository.save(ticket);
-
+        // Send email
         EmailDetails emailDetails = EmailDetails.builder()
                 .fullName(person.getFullName())
                 .recipient(person.getEmail())
@@ -136,16 +145,14 @@ public class TicketServiceImpl implements TicketService {
                 .seatType(booking.getSeatType())
                 .travelTime(ticket.getTravelTime())
                 .travelDate(ticket.getTravelDate())
-                .subject("RESERVE!!! TICKET BOOKED SUCCESSFULLY ")
+                .subject("RESERVE!!! TICKET BOOKED SUCCESSFULLY")
                 .build();
 
-        emailService.sendBookingAlert(emailDetails,"booking_verification");
-
-
+        emailService.sendBookingAlert(emailDetails, "booking_verification");
 
         return BookingResponse.builder()
                 .responseCode("005")
-                .responseMessage("BOOKING VERIFICATION SUCCESSFUL, KINDLY CHECK YOUR EMAIL FOR YOUR DETAILS ")
+                .responseMessage("BOOKING VERIFICATION SUCCESSFUL, KINDLY CHECK YOUR EMAIL FOR YOUR DETAILS")
                 .build();
     }
 
