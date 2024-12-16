@@ -139,7 +139,7 @@ public class TicketServiceImpl implements TicketService {
                 .subject("RESERVE!!! TICKET BOOKED SUCCESSFULLY ")
                 .build();
 
-        emailService.sendEmailAlert(emailDetails,"booking_verification");
+        emailService.sendBookingAlert(emailDetails,"booking_verification");
 
 
 
