@@ -8,6 +8,7 @@ import lombok.*;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.time.LocalTime;
 import java.util.List;
 
 @Entity
@@ -22,11 +23,11 @@ public class Ticket extends BaseEntity {
     private String ticketNo;
 
     @Enumerated(EnumType.STRING)
-    private Vehicle vehicle;
+    private SeatType seatType;
 
     private LocalDate travelDate;
 
-    private LocalDateTime travelTime;
+    private LocalTime travelTime;
 
     private int available_tickets;
 

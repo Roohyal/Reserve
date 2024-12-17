@@ -31,15 +31,19 @@ public class EmailDetails {
 
     private LocalDate travelDate;
 
-    private LocalDateTime travelTime;
+    private LocalTime travelTime;
 
     private String bookingNumber;
 
     private SeatType seatType;
 
-    private Terminal arrivalTerminal;
+    private String arrivalTerminal;
 
-    private Terminal departureTerminal;
+    private String departureTerminal;
+
+    private Long price;
+
+    private String ticketNumber;
 
 
 

@@ -15,8 +15,6 @@ import lombok.*;
 public class Bookings extends BaseEntity {
 
 
-    @Enumerated(EnumType.STRING)
-    private SeatType seatType;
 
     @Column(nullable = false, unique = true)
     private String bookingNumber;

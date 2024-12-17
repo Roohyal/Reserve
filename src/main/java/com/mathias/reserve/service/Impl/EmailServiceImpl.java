@@ -64,7 +64,9 @@ public class EmailServiceImpl implements EmailService {
                 "departureTerminal",emailDetails.getDepartureTerminal(),
                 "travelDate",emailDetails.getTravelDate(),
                 "travelTime",emailDetails.getTravelTime(),
-                "seatType",emailDetails.getSeatType()
+                "seatType",emailDetails.getSeatType(),
+                "ticketNumber", emailDetails.getTicketNumber(),
+                "price", emailDetails.getPrice()
 
         );
         context.setVariables(variables);

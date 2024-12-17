@@ -88,7 +88,7 @@ public class TicketServiceImpl implements TicketService {
                 .departureTerminal(departureTerminal)
                 .available_tickets(ticketDto.getAvailableTickets())
                 .state(state)
-                .vehicle(ticketDto.getVehicle())
+                .seatType(ticketDto.getSeatType())
                 .build();
 
         ticketRepository.save(ticket);
@@ -124,7 +124,6 @@ public class TicketServiceImpl implements TicketService {
         Bookings booking = new Bookings();
         booking.setTicket(ticket);
         booking.setPerson(person);
-        booking.setSeatType(bookingDto.getSeatType());
         booking.setBookingNumber(AccountUtil.generateBookingNumber()); // Generate unique booking number
         booking.setStatus(Status.RESERVED);
 
@@ -140,11 +139,13 @@ public class TicketServiceImpl implements TicketService {
                 .fullName(person.getFullName())
                 .recipient(person.getEmail())
                 .bookingNumber(booking.getBookingNumber())
-                .departureTerminal(ticket.getDepartureTerminal())
-                .arrivalTerminal(ticket.getArrivalTerminal())
-                .seatType(booking.getSeatType())
+                .departureTerminal(ticket.getDepartureTerminal().getName())
+                .arrivalTerminal(ticket.getArrivalTerminal().getName())
+                .seatType(ticket.getSeatType())
                 .travelTime(ticket.getTravelTime())
                 .travelDate(ticket.getTravelDate())
+                .ticketNumber(ticket.getTicketNo())
+                .price(ticket.getPrice())
                 .subject("RESERVE!!! TICKET BOOKED SUCCESSFULLY")
                 .build();
 
@@ -180,7 +181,7 @@ public class TicketServiceImpl implements TicketService {
                 .map(bookings -> BookingReport.builder()
                         .id(bookings.getId())
                         .bookingNumber(bookings.getBookingNumber())
-                        .seatType(bookings.getSeatType().name())
+                        .seatType(bookings.getTicket().getSeatType().name())
                         .status(bookings.getStatus().name())
                         .personName(bookings.getPerson().getFullName())
                         .departureTerminal(bookings.getTicket().getDepartureTerminal())
@@ -199,7 +200,7 @@ public class TicketServiceImpl implements TicketService {
                 .map(bookings -> BookingReport.builder()
                         .id(bookings.getId())
                         .bookingNumber(bookings.getBookingNumber())
-                        .seatType(bookings.getSeatType().name())
+                        .seatType(bookings.getTicket().getSeatType().name())
                         .status(bookings.getStatus().name())
                         .personName(bookings.getPerson().getFullName())
                         .departureTerminal(bookings.getTicket().getDepartureTerminal())
@@ -224,7 +225,6 @@ public class TicketServiceImpl implements TicketService {
                         .departureTerminal(ticket.getDepartureTerminal().getName())
                         .arrivalTerminal(ticket.getArrivalTerminal().getName())
                         .price(ticket.getPrice())
-                        .vehicle(ticket.getVehicle())
                         .build())
                 .collect(Collectors.toList());
     }
@@ -262,8 +262,7 @@ public class TicketServiceImpl implements TicketService {
                 .travelDate(booking.getTicket().getTravelDate())
                 .travelTime(booking.getTicket().getTravelTime())
                 .ticketNumber(booking.getTicket().getTicketNo())
-                .vehicle(booking.getTicket().getVehicle())
-                .seatType(booking.getSeatType())
+                .seatType(booking.getTicket().getSeatType())
                 .build();
     }
 

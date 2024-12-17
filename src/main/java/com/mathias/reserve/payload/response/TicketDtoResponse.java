@@ -5,6 +5,8 @@ import lombok.*;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.time.LocalTime;
+
 @Getter
 @Setter
 @NoArgsConstructor
@@ -16,16 +18,13 @@ public class TicketDtoResponse {
 
     private LocalDate travelDate;
 
-    private LocalDateTime travelTime;
+    private LocalTime travelTime;
 
     private String departureTerminal;
 
     private String arrivalTerminal;
 
     private String state;
-
-
-    private Vehicle vehicle;
 
     private int availableTickets;
 

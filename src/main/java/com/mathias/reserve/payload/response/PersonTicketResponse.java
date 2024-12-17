@@ -9,6 +9,8 @@ import lombok.NoArgsConstructor;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.time.LocalTime;
+
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
@@ -20,7 +22,7 @@ public class PersonTicketResponse {
     private String departureTerminal;
     private String arrivalTerminal;
     private LocalDate travelDate;
-    private LocalDateTime travelTime;
+    private LocalTime travelTime;
     private SeatType seatType;
     public Vehicle vehicle;
 
