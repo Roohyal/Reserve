@@ -16,6 +16,5 @@ import lombok.NoArgsConstructor;
 public class BookingDto {
     private Long ticketId; // ID of the ticket being booked
 
-    @Enumerated(EnumType.STRING)
-    private SeatType seatType; // Chosen seat type (e.g., ECONOMY, BUSINESS, etc.)
+
 }

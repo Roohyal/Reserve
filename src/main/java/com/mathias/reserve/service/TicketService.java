@@ -22,7 +22,7 @@ public interface TicketService {
 
     List<BookingReport> getCancelledTickets(String email);
 
-    List<BookingReport> getReservedTickets(String email);
+    BookingReport getReservedTickets(String email);
 
     List<TicketDtoResponse> getAllTickets(String email);
 

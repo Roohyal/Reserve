@@ -14,6 +14,7 @@ import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 import java.util.stream.Collectors;
@@ -176,27 +177,50 @@ public class TicketServiceImpl implements TicketService {
     public List<BookingReport> getCancelledTickets(String email) {
         personRepository.findByEmail(email).orElseThrow(()-> new NotFoundException("User not found"));
 
-        return bookingRepository.findByStatusAndPersonEmail(Status.CANCELLED, email)
-                .stream()
-                .map(bookings -> BookingReport.builder()
-                        .id(bookings.getId())
-                        .bookingNumber(bookings.getBookingNumber())
-                        .seatType(bookings.getTicket().getSeatType().name())
-                        .status(bookings.getStatus().name())
-                        .personName(bookings.getPerson().getFullName())
-                        .departureTerminal(bookings.getTicket().getDepartureTerminal())
-                        .arrivalTerminal(bookings.getTicket().getArrivalTerminal())
+        // Retrieve and sort bookings directly from the repository
+        List<Bookings> bookings = bookingRepository.findByStatusAndPersonEmail(Status.CANCELLED, email);
 
-                        .build())
-                .collect(Collectors.toList());
+        // Build the DTOs directly before returning
+        List<BookingReport> bookingReports = new ArrayList<>();
+        for (Bookings booking : bookings) {
+            BookingReport report = BookingReport.builder()
+                    .id(booking.getId())
+                    .bookingNumber(booking.getBookingNumber())
+                    .seatType(booking.getTicket().getSeatType().name())
+                    .status(booking.getStatus().name())
+                    .personName(booking.getPerson().getFullName())
+                    .departureTerminal(booking.getTicket().getDepartureTerminal())
+                    .arrivalTerminal(booking.getTicket().getArrivalTerminal())
+                    .build();
+            bookingReports.add(report);
+
+        }
+        return bookingReports;
+
+//        return bookingRepository.findByStatusAndPersonEmail(Status.CANCELLED, email)
+//                .stream()
+//                .map(bookings -> BookingReport.builder()
+//                        .id(bookings.getId())
+//                        .bookingNumber(bookings.getBookingNumber())
+//                        .seatType(bookings.getTicket().getSeatType().name())
+//                        .status(bookings.getStatus().name())
+//                        .personName(bookings.getPerson().getFullName())
+//                        .departureTerminal(bookings.getTicket().getDepartureTerminal())
+//                        .arrivalTerminal(bookings.getTicket().getArrivalTerminal())
+//
+//                        .build())
+//                .collect(Collectors.toList());
     }
 
     @Override
-    public List<BookingReport> getReservedTickets(String email) {
-        personRepository.findByEmail(email).orElseThrow(()-> new NotFoundException("User not found"));
+    public BookingReport getReservedTickets(String email) {
+        // Validate that the person exists
+        personRepository.findByEmail(email).orElseThrow(() -> new NotFoundException("User not found"));
 
+        // Fetch a single reserved booking
         return bookingRepository.findByStatusAndPersonEmail(Status.RESERVED, email)
                 .stream()
+                .findFirst() // Get the first matching booking
                 .map(bookings -> BookingReport.builder()
                         .id(bookings.getId())
                         .bookingNumber(bookings.getBookingNumber())
@@ -205,10 +229,10 @@ public class TicketServiceImpl implements TicketService {
                         .personName(bookings.getPerson().getFullName())
                         .departureTerminal(bookings.getTicket().getDepartureTerminal())
                         .arrivalTerminal(bookings.getTicket().getArrivalTerminal())
-
                         .build())
-                .collect(Collectors.toList());
+                .orElseThrow(() -> new NotFoundException("No reserved tickets found"));
     }
+
 
     @Override
     public List<TicketDtoResponse> getAllTickets(String email) {

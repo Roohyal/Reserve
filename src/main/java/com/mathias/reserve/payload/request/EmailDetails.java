@@ -31,7 +31,7 @@ public class EmailDetails {
 
     private LocalDate travelDate;
 
-    private LocalTime travelTime;
+    private LocalDateTime travelTime;
 
     private String bookingNumber;
 

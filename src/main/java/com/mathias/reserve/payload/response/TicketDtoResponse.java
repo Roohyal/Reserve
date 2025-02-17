@@ -18,7 +18,7 @@ public class TicketDtoResponse {
 
     private LocalDate travelDate;
 
-    private LocalTime travelTime;
+    private LocalDateTime travelTime;
 
     private String departureTerminal;
 

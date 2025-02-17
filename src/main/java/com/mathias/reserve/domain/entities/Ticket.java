@@ -27,7 +27,7 @@ public class Ticket extends BaseEntity {
 
     private LocalDate travelDate;
 
-    private LocalTime travelTime;
+    private LocalDateTime travelTime;
 
     private int available_tickets;
 

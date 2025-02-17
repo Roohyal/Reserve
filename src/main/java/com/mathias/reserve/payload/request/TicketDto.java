@@ -23,7 +23,7 @@ public class TicketDto {
 
     private LocalDate travelDate;
 
-    private LocalTime travelTime;
+    private LocalDateTime travelTime;
 
     private Long departureTerminalId;
 

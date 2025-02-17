@@ -22,7 +22,7 @@ public class PersonTicketResponse {
     private String departureTerminal;
     private String arrivalTerminal;
     private LocalDate travelDate;
-    private LocalTime travelTime;
+    private LocalDateTime travelTime;
     private SeatType seatType;
     public Vehicle vehicle;
 
